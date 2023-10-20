@@ -1,9 +1,14 @@
 #include <stdio.h>
 #include <string.h>
 
+enum ActivationStatus {
+    FALSE = 0,
+    TRUE = 1
+};
 struct User {
     char username[50];
     char password[50];
+    enum ActivationStatus isActive;
 };
 
 void registerUser(struct User users[], int *userCount) {
@@ -11,13 +16,27 @@ void registerUser(struct User users[], int *userCount) {
     scanf("%s", users[*userCount].username);
     printf("Enter password: ");
     scanf("%s", users[*userCount].password);
+    int activationInput;
+    int check = 1; 
+    do {
+        printf("Enter Activation (1 for active, 0 for inactive): ");
+        scanf("%d", &activationInput);
+
+        if (activationInput == TRUE || activationInput == FALSE) {
+            check = 0;
+        } else {
+            printf("Invalid input for activation status. Please enter 1 for active or 0 for inactive.\n");
+        }
+    } while (check);
+
+    users[*userCount].isActive = activationInput;
     (*userCount)++;
     printf("Registration successful!\n");
 }
 
 int loginUser(struct User users[], int userCount, char username[], char password[]) {
     for (int i = 0; i < userCount; i++) {
-        if (strcmp(users[i].username, username) == 0 && strcmp(users[i].password, password) == 0) {
+        if (strcmp(users[i].username, username) == 0 && strcmp(users[i].password, password) == 0 && users[i].isActive == TRUE) {
             return 1; 
         }
     }
